@@ -17,10 +17,23 @@ Project: https://github.com/aymericdamien/TensorFlow-Examples/
 from __future__ import print_function
 
 # Import MNIST data
-from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("/tmp/data/", one_hot=False)
+# from tensorflow.examples.tutorials.mnist import input_data
+# mnist = input_data.read_data_sets("/tmp/data/", one_hot=False)
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+from tensorflow.keras.datasets import mnist
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+import numpy as np
+from tensorflow import keras
+# Scale images to the [0, 1] range
+x_train = x_train.astype("float32") / 255
+x_test = x_test.astype("float32") / 255
+# Make sure images have shape (28, 28, 1)
+x_train = np.reshape(x_train, (60000, 784))
+x_test = np.reshape(x_test, (10000, 784))
+# print("x_train shape:", x_train.shape)
+# print(x_train.shape[0], "train samples")
+# print(x_test.shape[0], "test samples")
 
 # Parameters
 learning_rate = 0.1
@@ -87,7 +100,7 @@ model = tf.estimator.Estimator(model_fn)
 
 # Define the input function for training
 input_fn = tf.estimator.inputs.numpy_input_fn(
-    x={'images': mnist.train.images}, y=mnist.train.labels,
+    x={'images': x_train}, y=y_train,
     batch_size=batch_size, num_epochs=None, shuffle=True)
 # Train the Model
 model.train(input_fn, steps=num_steps)
@@ -95,7 +108,7 @@ model.train(input_fn, steps=num_steps)
 # Evaluate the Model
 # Define the input function for evaluating
 input_fn = tf.estimator.inputs.numpy_input_fn(
-    x={'images': mnist.test.images}, y=mnist.test.labels,
+    x={'images': x_test}, y=y_test,
     batch_size=batch_size, shuffle=False)
 # Use the Estimator 'evaluate' method
 e = model.evaluate(input_fn)
