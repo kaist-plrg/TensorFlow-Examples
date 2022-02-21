@@ -21,6 +21,7 @@ from __future__ import print_function
 # mnist = input_data.read_data_sets("/tmp/data/", one_hot=False)
 
 import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 from tensorflow.keras.datasets import mnist
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 import numpy as np
